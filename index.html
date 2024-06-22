@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="application-name" content="Schedule">
+  <meta name="theme-color" content="#262626">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="icon.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="icon.png">
+  <meta name="apple-mobile-web-app-title" content="Schedule">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>Schedule</title>
+
+  <link rel="stylesheet" href="index.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+</head>
+
+<body>
+  <div id="nav_bar">
+    <div id="nav_username"></div>
+    <div class="row right" id="nav_group">
+      <div class="btn" id="nav_btn_round">Round</div>
+      <div class="btn" id="nav_btn_off">Off</div>
+      <div class="btn" id="nav_btn_next"><span class="material-symbols-outlined">keyboard_tab</span></div>
+      <div class="btn" id="nav_btn_stat"><span class="material-symbols-outlined">analytics</span></div>
+      <div class="btn" id="nav_btn_re"><span class="material-symbols-outlined">refresh</span></div>
+      <div class="btn" id="nav_btn_upload"><span class="material-symbols-outlined">publish</span></div>
+      <div class="btn" id="nav_btn_clear"><span class="material-symbols-outlined">close</span></div>
+      <div class="btn" id="nav_btn_save"><span class="material-symbols-outlined">save</span></div>
+      <div class="btn" id="nav_btn_back"><span class="material-symbols-outlined">arrow_back</span></div>
+    </div>
+  </div>
+  <div id="page_input">
+    <div id="page_input_name">
+      <h3>Choose your name</h3>
+      <select id="input_name"></select>
+      <div id="password_row">
+        <span>need password</span><input id="input_password">
+      </div>
+      <div id="btn_name_done" class="btn bg_blue">Done</div>
+    </div>
+    <div id="page_input_round">
+      <h3 style="margin-bottom: 8px;">Morning round</h3>
+      <span style="padding-bottom: 20px;">Choose a day with a morning ward round to avoid ER duties in the morning.</span>
+      <div id="page_calendar_round"></div>
+    </div>
+    <div id="page_input_off">
+      <h3 style="margin-bottom: 8px;">Dayoff</h3>
+      <span style="padding-bottom: 20px;">Include Friday in your day off to ensure no activities are scheduled.</span>
+      <div id="page_calendar_off"></div>
+      <div id="page_lists_off"></div>
+    </div>
+  </div>
+  <div id="page_schedule"></div>
+  <div id="page_calendar"></div>
+  <div class="modal" id="modal_stat">
+    <div class="head">
+      <div>Stat Modal</div>
+      <div>&times;</div>
+    </div>
+    <div class="body"></div>
+  </div>
+  <div id="page_loader">
+    <div class="loader"></div>
+  </div>
+  <div id="popup">
+    <div class="icon"><span class="material-symbols-outlined">warning</span></div>
+    <div class="text"></div>
+    <div class="subtext"></div>
+  </div>
+  <script src="index.js"></script>
+</body>
+
+</html>
