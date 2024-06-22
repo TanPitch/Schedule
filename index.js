@@ -950,6 +950,9 @@ const page_input_off = document.querySelector("#page_input_off");
 const page_schedule = document.querySelector("#page_schedule");
 const page_calendar = document.querySelector("#page_calendar");
 
+const btn_next_weekoff = document.querySelector("#btn_next_weekoff");
+const btn_next_ward = document.querySelector("#btn_next_ward");
+
 var mode;
 initial();
 
@@ -1231,10 +1234,27 @@ function initial() {
       }
 
       nav_btn_round.addEventListener("click", () => {
+        nav_btn_round.className = "btn bg_midgrey";
+        nav_btn_off.className = "btn bg_midgrey select";
         page_input_round.style.display = "flex";
         page_input_off.style.display = "none";
       });
       nav_btn_off.addEventListener("click", () => {
+        nav_btn_round.className = "btn bg_midgrey select";
+        nav_btn_off.className = "btn bg_midgrey";
+        page_input_round.style.display = "none";
+        page_input_off.style.display = "flex";
+      });
+
+      btn_next_ward.addEventListener("click", () => {
+        nav_btn_round.className = "btn bg_midgrey";
+        nav_btn_off.className = "btn bg_midgrey select";
+        page_input_round.style.display = "flex";
+        page_input_off.style.display = "none";
+      });
+      btn_next_weekoff.addEventListener("click", () => {
+        nav_btn_round.className = "btn bg_midgrey select";
+        nav_btn_off.className = "btn bg_midgrey";
         page_input_round.style.display = "none";
         page_input_off.style.display = "flex";
       });
@@ -1283,7 +1303,7 @@ function initial() {
         .then((json) => {
           const output = JSON.parse(json);
           if (output.status == "ok") {
-            alert("Saved", "", "done");
+            alert("Saved", "Please wait until everyone has inserted their data.", "done");
             loadPage.style.display = "none";
             updatePeepOffTxt(output.response.value);
 

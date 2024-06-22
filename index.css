@@ -126,6 +126,10 @@ select {
   box-shadow: inset 0 0 50px 50px rgba(0, 0, 0, 0.1);
 }
 
+.btn.select {
+  box-shadow: inset 0 0 50px 50px rgba(0, 0, 0, 0.2);
+}
+
 .right {
   margin-left: auto;
 }
@@ -180,7 +184,7 @@ select {
 /* #region : nav bar */
 
 #nav_bar {
-  background-color: var(--midgrey);
+  background-color: var(--lightgrey);
   padding: 8px;
   display: none;
   align-items: center;
@@ -382,6 +386,10 @@ tbody tr td {
 #popup .text {
   font-size: 130%;
   font-weight: bold;
+}
+
+#popup .subtext {
+  text-align: center;
 }
 
 /* #endregion */
