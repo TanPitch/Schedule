@@ -2,7 +2,7 @@
 
 All date start from 1 (index 0 is prev date from prev month)
 
-[ ] in function recheck() mode 1 -> create day off data
+[ ] count ER3_1 max ER3 = 2 and priority from (lowest ER, ER, PCU, Ortho)
 [ ] add OPD, Forensic input
 
 */
@@ -175,131 +175,157 @@ var peepStat = [
     name: "อมรเศรษฐ์",
     block: 0,
     hr: 0,
+    er3: 0,
   },
   {
     name: "ธัญณัฐ",
     block: 0,
     hr: 0,
+    er3: 0,
   },
   {
     name: "โศภิชตรา",
     block: 0,
     hr: 0,
+    er3: 0,
   },
   {
     name: "นัทชา",
     block: 0,
     hr: 0,
+    er3: 0,
   },
   {
     name: "แทนไท",
     block: 0,
     hr: 0,
+    er3: 0,
   },
   {
     name: "กสินพัฒน์",
     block: 0,
     hr: 0,
+    er3: 0,
   },
   {
     name: "รวิษฏ์",
     block: 0,
     hr: 0,
+    er3: 0,
   },
   {
     name: "พงศ์ภัค",
     block: 0,
     hr: 0,
+    er3: 0,
   },
   {
     name: "ปริณดา",
     block: 0,
     hr: 0,
+    er3: 0,
   },
   {
     name: "บุณยานุช",
     block: 0,
     hr: 0,
+    er3: 0,
   },
   {
     name: "กณิศา",
     block: 0,
     hr: 0,
+    er3: 0,
   },
   {
     name: "กัลยา",
     block: 0,
     hr: 0,
+    er3: 0,
   },
   {
     name: "คัทสุฮีโร่",
     block: 0,
     hr: 0,
+    er3: 0,
   },
   {
     name: "เคนจิ",
     block: 0,
     hr: 0,
+    er3: 0,
   },
   {
     name: "ณพข์ฉัตรฬ์",
     block: 0,
     hr: 0,
+    er3: 0,
   },
   {
     name: "ภัทรปวัน",
     block: 0,
     hr: 0,
+    er3: 0,
   },
   {
     name: "วรปรัชญ์",
     block: 0,
     hr: 0,
+    er3: 0,
   },
   {
     name: "กัปตัน",
     block: 0,
     hr: 0,
+    er3: 0,
   },
   {
     name: "พรหมพลิน",
     block: 0,
     hr: 0,
+    er3: 0,
   },
   {
     name: "ชาญวิทย์",
     block: 0,
     hr: 0,
+    er3: 0,
   },
   {
     name: "ศีรญา",
     block: 0,
     hr: 0,
+    er3: 0,
   },
   {
     name: "นัธทสิทธิ",
     block: 0,
     hr: 0,
+    er3: 0,
   },
   {
     name: "นนทนันท์",
     block: 0,
     hr: 0,
+    er3: 0,
   },
   {
     name: "ภูมิศิริ",
     block: 0,
     hr: 0,
+    er3: 0,
   },
   {
     name: "ค่าย 1",
     block: 0,
     hr: 0,
+    er3: 0,
   },
   {
     name: "ค่าย 2",
     block: 0,
     hr: 0,
+    er3: 0,
   },
 ];
 
@@ -523,7 +549,7 @@ function getData() {
 const loadPage = document.querySelector("#page_loader");
 
 // input peep name, return random peep name
-function randomPeep(peep, hr = 1, isER = false) {
+function randomPeep(peep, hr = 1, isER = false, block) {
   // getting data
   const peeparray = [];
   peep.forEach((el) => {
@@ -577,6 +603,7 @@ function randomPeep(peep, hr = 1, isER = false) {
     if (choosen.name == peepStat[i].name) {
       peepStat[i].block += 1;
       peepStat[i].hr += hr;
+      if (block.includes("er3")) peepStat[i].er3 += 1;
       break;
     }
   }
@@ -769,7 +796,7 @@ function doSchedule() {
     ["med", "ped", "ob", "sx", "ortho"].forEach((ward) => {
       if (data_table[date][ward] != undefined && data_table[date][ward] == "") {
         const getHr = ward.includes("er") ? 1 : isweekend(date) ? 3 : 2;
-        const thatPeep = randomPeep(availablePeep(date, ward), getHr, false);
+        const thatPeep = randomPeep(availablePeep(date, ward), getHr, false, ward);
         data_table[date][ward] = thatPeep;
         // console.log(date, thatPeep, ward);
       }
@@ -781,7 +808,7 @@ function doSchedule() {
     ["er3_1", "er1_1", "er1_2", "er2_1", "er2_2", "er2_3"].forEach((ward) => {
       if (data_table[date][ward] != undefined && data_table[date][ward] == "") {
         const getHr = ward.includes("er") ? 1 : isweekend(date) ? 3 : 2;
-        const thatPeep = randomPeep(availablePeep(date, ward), getHr, true);
+        const thatPeep = randomPeep(availablePeep(date, ward), getHr, true, ward);
         data_table[date][ward] = thatPeep;
         // console.log(date, thatPeep, ward);
       }
@@ -1246,12 +1273,6 @@ function initial() {
         page_input_off.style.display = "flex";
       });
 
-      btn_next_ward.addEventListener("click", () => {
-        nav_btn_round.className = "btn bg_midgrey";
-        nav_btn_off.className = "btn bg_midgrey select";
-        page_input_round.style.display = "flex";
-        page_input_off.style.display = "none";
-      });
       btn_next_weekoff.addEventListener("click", () => {
         nav_btn_round.className = "btn bg_midgrey select";
         nav_btn_off.className = "btn bg_midgrey";
@@ -1275,6 +1296,9 @@ function initial() {
     }
   });
 
+  btn_next_ward.addEventListener("click", () => {
+    nav_btn_save.click();
+  });
   nav_btn_save.addEventListener("click", () => {
     if (mode == 1) {
       const roundObj = Array.from(document.querySelectorAll("#page_calendar_round .bg_orange"))
@@ -1385,131 +1409,157 @@ nav_btn_re.addEventListener("click", () => {
       name: "อมรเศรษฐ์",
       block: 0,
       hr: 0,
+      er3: 0,
     },
     {
       name: "ธัญณัฐ",
       block: 0,
       hr: 0,
+      er3: 0,
     },
     {
       name: "โศภิชตรา",
       block: 0,
       hr: 0,
+      er3: 0,
     },
     {
       name: "นัทชา",
       block: 0,
       hr: 0,
+      er3: 0,
     },
     {
       name: "แทนไท",
       block: 0,
       hr: 0,
+      er3: 0,
     },
     {
       name: "กสินพัฒน์",
       block: 0,
       hr: 0,
+      er3: 0,
     },
     {
       name: "รวิษฏ์",
       block: 0,
       hr: 0,
+      er3: 0,
     },
     {
       name: "พงศ์ภัค",
       block: 0,
       hr: 0,
+      er3: 0,
     },
     {
       name: "ปริณดา",
       block: 0,
       hr: 0,
+      er3: 0,
     },
     {
       name: "บุณยานุช",
       block: 0,
       hr: 0,
+      er3: 0,
     },
     {
       name: "กณิศา",
       block: 0,
       hr: 0,
+      er3: 0,
     },
     {
       name: "กัลยา",
       block: 0,
       hr: 0,
+      er3: 0,
     },
     {
       name: "คัทสุฮีโร่",
       block: 0,
       hr: 0,
+      er3: 0,
     },
     {
       name: "เคนจิ",
       block: 0,
       hr: 0,
+      er3: 0,
     },
     {
       name: "ณพข์ฉัตรฬ์",
       block: 0,
       hr: 0,
+      er3: 0,
     },
     {
       name: "ภัทรปวัน",
       block: 0,
       hr: 0,
+      er3: 0,
     },
     {
       name: "วรปรัชญ์",
       block: 0,
       hr: 0,
+      er3: 0,
     },
     {
       name: "กัปตัน",
       block: 0,
       hr: 0,
+      er3: 0,
     },
     {
       name: "พรหมพลิน",
       block: 0,
       hr: 0,
+      er3: 0,
     },
     {
       name: "ชาญวิทย์",
       block: 0,
       hr: 0,
+      er3: 0,
     },
     {
       name: "ศีรญา",
       block: 0,
       hr: 0,
+      er3: 0,
     },
     {
       name: "นัธทสิทธิ",
       block: 0,
       hr: 0,
+      er3: 0,
     },
     {
       name: "นนทนันท์",
       block: 0,
       hr: 0,
+      er3: 0,
     },
     {
       name: "ภูมิศิริ",
       block: 0,
       hr: 0,
+      er3: 0,
     },
     {
       name: "ค่าย 1",
       block: 0,
       hr: 0,
+      er3: 0,
     },
     {
       name: "ค่าย 2",
       block: 0,
       hr: 0,
+      er3: 0,
     },
   ];
 
