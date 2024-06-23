@@ -3,6 +3,7 @@
 All date start from 1 (index 0 is prev date from prev month)
 
 [ ] count ER3_1 max ER3 = 2 and priority from (lowest ER, ER, PCU, Ortho)
+[ ] doschedule error
 [ ] add OPD, Forensic input
 
 */
@@ -61,7 +62,7 @@ var specialName_2 = "";
 // #region : static data
 
 const API_url =
-  "https://script.google.com/macros/s/AKfycbw92K4nfnv69U7w-M_htM0sQP82AYBo0quP6QW-JzBTut5rBIb1ETubW32hRYrdLbma/exec";
+  "https://script.google.com/macros/s/AKfycbw4Gj4VIA31gWSoy_y_2YaZ3WSvNHorx3H43-9CSyKqKWwC6BFG-k8mkbM1-XIgTHKV/exec";
 
 const data_rotate = [
   {
@@ -548,10 +549,10 @@ function getData() {
 
 const loadPage = document.querySelector("#page_loader");
 
-// input peep name, return random peep name
+// input peep name, return random peep name CRASH:
 function randomPeep(peep, hr = 1, isER = false, block) {
   // getting data
-  const peeparray = [];
+  var peeparray = [];
   peep.forEach((el) => {
     for (let i = 0; i < peepStat.length; i++) {
       if (el == peepStat[i].name) {
@@ -560,16 +561,69 @@ function randomPeep(peep, hr = 1, isER = false, block) {
       }
     }
   });
+  if (block.includes("er")) peeparray = peeparray.filter((el) => el.er3 <= 1);
 
   // shuffle array
-  function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-  }
+  // function shuffle(array) {
+  //   for (let i = array.length - 1; i > 0; i--) {
+  //     const j = Math.floor(Math.random() * (i + 1));
+  //     [array[i], array[j]] = [array[j], array[i]];
+  //   }
+  // }
 
-  // group items by block
+  // // group items by block
+  // const groupedData = peeparray.reduce((acc, item) => {
+  //   const key = item.block;
+  //   if (!acc[key]) acc[key] = [];
+  //   acc[key].push(item);
+  //   return acc;
+  // }, {});
+
+  // // special
+  // if (isER) {
+  //   for (const key in groupedData) {
+  //     const group = groupedData[key];
+  //     const specialItem = group.filter((item) => item.name === "ธัญณัฐ");
+  //     const otherItems = group.filter((item) => item.name !== "ธัญณัฐ");
+  //     shuffle(otherItems);
+  //     groupedData[key] = [...otherItems, ...specialItem];
+  //   }
+  // } else
+  //   for (const key in groupedData) {
+  //     shuffle(groupedData[key]);
+  //   }
+
+  // // sort items
+  // const sortedData = Object.keys(groupedData)
+  //   .map(Number)
+  //   .sort((a, b) => a - b)
+  //   .reduce((acc, key) => acc.concat(groupedData[key]), []);
+
+  // // update block and hr
+  // const choosen = sortedData[0];
+  // for (let i = 0; i < peepStat.length; i++) {
+  //   if (choosen.name == peepStat[i].name) {
+  //     peepStat[i].block += 1;
+  //     peepStat[i].hr += hr;
+  //     if (block.includes("er3")) peepStat[i].er3 += 1;
+  //     break;
+  //   }
+  // }
+
+  // console.log(sortedData);
+
+  // return choosen.name;
+
+  // shuffle array
+
+  // function shuffle(array) {
+  //   for (let i = array.length - 1; i > 0; i--) {
+  //     const j = Math.floor(Math.random() * (i + 1));
+  //     [array[i], array[j]] = [array[j], array[i]];
+  //   }
+  // }
+
+  // // Group items by block
   const groupedData = peeparray.reduce((acc, item) => {
     const key = item.block;
     if (!acc[key]) acc[key] = [];
@@ -577,38 +631,149 @@ function randomPeep(peep, hr = 1, isER = false, block) {
     return acc;
   }, {});
 
-  // special
-  if (isER) {
-    for (const key in groupedData) {
-      const group = groupedData[key];
-      const specialItem = group.filter((item) => item.name === "ธัญณัฐ");
-      const otherItems = group.filter((item) => item.name !== "ธัญณัฐ");
-      shuffle(otherItems);
-      groupedData[key] = [...otherItems, ...specialItem];
-    }
-  } else
-    for (const key in groupedData) {
-      shuffle(groupedData[key]);
-    }
+  // // Sort and shuffle groups
+  // for (const key in groupedData) {
+  //   if (isER) {
+  //     if (key.includes("er")) {
+  //       // Sort by hr, then by er3
+  //       groupedData[key].sort((a, b) => {
+  //         if (a.hr !== b.hr) return a.hr - b.hr;
+  //         if (a.er3 !== b.er3) return a.er3 - b.er3;
+  //         return 0;
+  //       });
 
-  // sort items
-  const sortedData = Object.keys(groupedData)
-    .map(Number)
-    .sort((a, b) => a - b)
-    .reduce((acc, key) => acc.concat(groupedData[key]), []);
+  //       // Shuffle items with same hr and er3, excluding "ธัญณัฐ"
+  //       let i = 0;
+  //       while (i < groupedData[key].length) {
+  //         let j = i;
+  //         while (
+  //           j < groupedData[key].length &&
+  //           groupedData[key][j].hr === groupedData[key][i].hr &&
+  //           groupedData[key][j].er3 === groupedData[key][i].er3
+  //         ) {
+  //           j++;
+  //         }
+  //         const subGroup = groupedData[key].slice(i, j).filter((item) => item.name !== "ธัญณัฐ");
+  //         shuffle(subGroup);
+  //         for (let k = i; k < j; k++) {
+  //           if (groupedData[key][k].name !== "ธัญณัฐ") {
+  //             groupedData[key][k] = subGroup.shift();
+  //           }
+  //         }
+  //         i = j;
+  //       }
 
-  // update block and hr
-  const choosen = sortedData[0];
-  for (let i = 0; i < peepStat.length; i++) {
-    if (choosen.name == peepStat[i].name) {
-      peepStat[i].block += 1;
-      peepStat[i].hr += hr;
-      if (block.includes("er3")) peepStat[i].er3 += 1;
-      break;
-    }
-  }
+  //       // Place "ธัญณัฐ" items last in their respective groups
+  //       groupedData[key].sort((a, b) => {
+  //         if (a.name === "ธัญณัฐ" && b.name !== "ธัญณัฐ") return 1;
+  //         if (a.name !== "ธัญณัฐ" && b.name === "ธัญณัฐ") return -1;
+  //         return 0;
+  //       });
+  //     } else {
+  //       // Sort by hr
+  //       groupedData[key].sort((a, b) => a.hr - b.hr);
 
-  return choosen.name;
+  //       // Shuffle items with same hr, excluding "ธัญณัฐ"
+  //       let i = 0;
+  //       while (i < groupedData[key].length) {
+  //         let j = i;
+  //         while (j < groupedData[key].length && groupedData[key][j].hr === groupedData[key][i].hr) {
+  //           j++;
+  //         }
+  //         const subGroup = groupedData[key].slice(i, j).filter((item) => item.name !== "ธัญณัฐ");
+  //         shuffle(subGroup);
+  //         for (let k = i; k < j; k++) {
+  //           if (groupedData[key][k].name !== "ธัญณัฐ") {
+  //             groupedData[key][k] = subGroup.shift();
+  //           }
+  //         }
+  //         i = j;
+  //       }
+
+  //       // Place "ธัญณัฐ" items last in their respective groups
+  //       groupedData[key].sort((a, b) => {
+  //         if (a.name === "ธัญณัฐ" && b.name !== "ธัญณัฐ") return 1;
+  //         if (a.name !== "ธัญณัฐ" && b.name === "ธัญณัฐ") return -1;
+  //         return 0;
+  //       });
+  //     }
+  //   } else {
+  //     if (key.includes("er")) {
+  //       // Sort by hr, then by er3
+  //       groupedData[key].sort((a, b) => {
+  //         if (a.hr !== b.hr) return a.hr - b.hr;
+  //         if (a.er3 !== b.er3) return a.er3 - b.er3;
+  //         return 0;
+  //       });
+
+  //       // Shuffle items with same hr and er3
+  //       let i = 0;
+  //       while (i < groupedData[key].length) {
+  //         let j = i;
+  //         while (
+  //           j < groupedData[key].length &&
+  //           groupedData[key][j].hr === groupedData[key][i].hr &&
+  //           groupedData[key][j].er3 === groupedData[key][i].er3
+  //         ) {
+  //           j++;
+  //         }
+  //         const subGroup = groupedData[key].slice(i, j);
+  //         shuffle(subGroup);
+  //         for (let k = i; k < j; k++) {
+  //           groupedData[key][k] = subGroup[k - i];
+  //         }
+  //         i = j;
+  //       }
+  //     } else {
+  //       // Sort by hr
+  //       groupedData[key].sort((a, b) => a.hr - b.hr);
+
+  //       // Shuffle items with same hr
+  //       let i = 0;
+  //       while (i < groupedData[key].length) {
+  //         let j = i;
+  //         while (j < groupedData[key].length && groupedData[key][j].hr === groupedData[key][i].hr) {
+  //           j++;
+  //         }
+  //         const subGroup = groupedData[key].slice(i, j);
+  //         shuffle(subGroup);
+  //         for (let k = i; k < j; k++) {
+  //           groupedData[key][k] = subGroup[k - i];
+  //         }
+  //         i = j;
+  //       }
+  //     }
+  //   }
+  // }
+
+  // // Sort blocks numerically and flatten the array
+  // const sortedData = Object.keys(groupedData)
+  //   .map(Number)
+  //   .sort((a, b) => a - b)
+  //   .reduce((acc, key) => acc.concat(groupedData[key]), []);
+
+  console.log(peeparray);
+  console.log(groupedData);
+
+  // if (block.includes("er3")) {
+
+  // } else {
+
+  // }
+
+  // // Update block and hr for the chosen item
+  // const choosen = sortedData[0];
+  // for (let i = 0; i < peepStat.length; i++) {
+  //   if (choosen.name === peepStat[i].name) {
+  //     peepStat[i].block += 1;
+  //     peepStat[i].hr += hr;
+  //     if (block.includes("er3")) peepStat[i].er3 += 1;
+  //     break;
+  //   }
+  // }
+
+  // // Return the name of the chosen item
+  // return choosen.name;
 }
 
 // input date block, return available peep name | block : med, sx, ped, ob, ortho, er1, er2, er3
@@ -709,19 +874,19 @@ function availablePeep(date, block) {
           removeData(date - 1, ["med", "ped", "ob", "sx", "ortho", "er3_1"]);
           break;
         case 2:
-          if (isweekend) {
-            removeBy((el) => {
-              for (let i = 0; i < data_off.length; i++) {
-                if (
-                  data_off[i].name == el &&
-                  data_off[i].ward.includes(date) &&
-                  ["med", "ped"].includes(data_rotate[i].rotate[(nextMonth + 19) % 12])
-                )
-                  return true;
-              }
-              return false;
-            });
-          }
+          // if (isweekend) {
+          //   removeBy((el) => {
+          //     for (let i = 0; i < data_off.length; i++) {
+          //       if (
+          //         data_off[i].name == el &&
+          //         data_off[i].ward.includes(date) &&
+          //         ["med", "ped"].includes(data_rotate[i].rotate[(nextMonth + 19) % 12])
+          //       )
+          //         return true;
+          //     }
+          //     return false;
+          //   });
+          // }
           removeData(date, ["er1_1", "er1_2"]);
           break;
         case 3:
@@ -744,19 +909,19 @@ function availablePeep(date, block) {
         case 2:
           removeData(date, ["er1_1", "er1_2"]);
           removeData(date, ["er3_1"]);
-          if (isweekend) {
-            removeBy((el) => {
-              for (let i = 0; i < data_off.length; i++) {
-                if (
-                  data_off[i].name == el &&
-                  data_off[i].ward.includes(date) &&
-                  ["med", "ped"].includes(data_rotate[i].rotate[(nextMonth + 19) % 12])
-                )
-                  return true;
-              }
-              return false;
-            });
-          }
+          // if (isweekend) {
+          //   removeBy((el) => {
+          //     for (let i = 0; i < data_off.length; i++) {
+          //       if (
+          //         data_off[i].name == el &&
+          //         data_off[i].ward.includes(date) &&
+          //         ["med", "ped"].includes(data_rotate[i].rotate[(nextMonth + 19) % 12])
+          //       )
+          //         return true;
+          //     }
+          //     return false;
+          //   });
+          // }
           break;
         case 3:
           removeData(date, ["er2_1", "er2_2", "er2_3"]);
@@ -765,12 +930,12 @@ function availablePeep(date, block) {
           break;
       }
     } else {
-      if (date > 2) removeData(date - 2, block);
+      if (date > 1) removeData(date - 2, block);
       removeData(date - 1, block);
       removeData(date + 1, block);
       if (date < new Date(nextYear, next2Month, 0).getDate() - 1) removeData(date + 2, block);
       removeData(date - 1, ["er3_1"]);
-      removeData(date + 1, ["er3_1"]);
+      // removeData(date + 1, ["er3_1"]);
     }
   }
 
@@ -1019,8 +1184,18 @@ function initial() {
       loadPage.style.display = "none";
 
       if (output.status == "ok") {
-        page_input.style.display = "flex";
         mode = output.response.mode;
+        if (mode == 1) {
+          const now = new Date();
+          const start = new Date(output.response.time[0]);
+          const end = new Date(output.response.time[1]);
+          if (now < start || now > end) {
+            alert("Not Available", "The input time has expired.", "alert");
+            return;
+          }
+        }
+
+        page_input.style.display = "flex";
         if (mode != 0) {
           specialName_1 = output.response.specialnames[0];
           specialName_2 = output.response.specialnames[1];
@@ -1309,15 +1484,44 @@ function initial() {
         .map((element) => Number(element.textContent.trim()))
         .map(Number)
         .sort((a, b) => a - b);
+
+      // count week
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth();
+      const currentYear = currentDate.getFullYear();
+      const { month: nextMonth, year: nextYear } = getNextMonth(currentMonth, currentYear);
+
+      function daysInMonth(month, year) {
+        return new Date(year, month, 0).getDate();
+      }
+      let weeks = new Set();
+      for (let day = 1; day <= daysInMonth(nextMonth, nextYear); day++) {
+        let date = new Date(nextYear, nextMonth, day);
+        let dayOfWeek = date.getDay();
+
+        if (dayOfWeek === 0 || dayOfWeek === 6) {
+          let weekNumber = Math.ceil(day / 7);
+          weeks.add(weekNumber);
+        }
+      }
+
+      // count peep
+      const sameRotate = [];
+      const sameRotateIndex = [];
+      data_rotate.forEach((el, i) => {
+        if (el.rotate[(nextMonth + 19) % 12] == userRotate) sameRotateIndex.push(i);
+      });
+      // console.log(data_rotate[NameToNum(userName)].rotate[(nextMonth + 19) % 12]);
+      const sameOff = Math.max(0, sameRotateIndex.length - weeks.size);
+
+      // fetch data off from server again
       loadPage.style.display = "flex";
       fetch(API_url, {
         redirect: "follow",
         method: "POST",
         body: JSON.stringify({
-          command: "setDayData",
+          command: "initial",
           user: NameToNum(userName),
-          off: JSON.stringify(offObj),
-          round: JSON.stringify(roundObj),
         }),
         headers: {
           "Content-type": "text/plain;charset=utf-8",
@@ -1326,14 +1530,130 @@ function initial() {
         .then((response) => response.text())
         .then((json) => {
           const output = JSON.parse(json);
+          loadPage.style.display = "none";
           if (output.status == "ok") {
-            alert("Saved", "Please wait until everyone has inserted their data.", "done");
-            loadPage.style.display = "none";
-            updatePeepOffTxt(output.response.value);
+            // update off data
+            data_off.forEach((el, i) => {
+              if (NameToNum(userName) != i && sameRotateIndex.includes(i)) {
+                el.dayoff = JSON.parse(output.response.value[i][0]);
+              }
+              if (sameRotateIndex.includes(i)) sameRotate.push(data_off[i]);
+            });
 
-            // update off data TODO:
+            // check if off data same
+            function isweekend(date) {
+              const dateToCheck = new Date(nextYear, nextMonth, date);
+              const dayOfWeek = dateToCheck.getDay();
+              return dayOfWeek === 0 || dayOfWeek === 6 || specialWeekend[nextMonth].includes(date);
+            }
+            var countSameOff = 0;
+            function removeConsecutiveNumbers(arr) {
+              if (arr.length === 0) return [];
+
+              let result = [];
+              result.push(arr[0]); // Add the first number to the result
+
+              for (let i = 1; i < arr.length; i++) {
+                // Check if the current number is not consecutive to the last added number in the result
+                if (arr[i] !== arr[i - 1] + 1) {
+                  result.push(arr[i]);
+                }
+              }
+
+              return result;
+            }
+            const cleanoffObj = removeConsecutiveNumbers(offObj.filter((el) => isweekend(el)));
+            const choosenDate = [];
+            cleanoffObj.forEach((day) => {
+              if (!isweekend(day)) return;
+              sameRotate.forEach((el, i) => {
+                if (NameToNum(userName) == i) return;
+                if (el.dayoff.includes(day)) {
+                  countSameOff++;
+                  choosenDate.push(day);
+                }
+              });
+            });
+            if (countSameOff > sameOff) {
+              // console.log(choosenDate);
+              loadPage.style.display = "flex";
+
+              fetch(API_url, {
+                redirect: "follow",
+                method: "POST",
+                body: JSON.stringify({
+                  command: "setDayData",
+                  user: NameToNum(userName),
+                  off: JSON.stringify([]),
+                  round: JSON.stringify(roundObj),
+                }),
+                headers: {
+                  "Content-type": "text/plain;charset=utf-8",
+                },
+              })
+                .then((response) => response.text())
+                .then((json) => {
+                  const output = JSON.parse(json);
+                  if (output.status == "ok") {
+                    loadPage.style.display = "none";
+                    alert(
+                      "Already choosen",
+                      `Week <span class="bg_orange">&nbsp;${choosenDate.join(
+                        ", "
+                      )}&nbsp;</span> have already been chosen.`,
+                      "alert"
+                    );
+                    updatePeepOffTxt(output.response.value);
+
+                    // update off data TODO:
+                  } else {
+                    loadPage.style.display = "none";
+                    alert("Error", "", "alert");
+                  }
+                })
+                .catch((error) => {
+                  alert("Error", error, "alert");
+                  loadPage.style.display = "none";
+                  console.error("Fetch error: ", error);
+                });
+            } else {
+              // pass -> save
+              loadPage.style.display = "flex";
+
+              fetch(API_url, {
+                redirect: "follow",
+                method: "POST",
+                body: JSON.stringify({
+                  command: "setDayData",
+                  user: NameToNum(userName),
+                  off: JSON.stringify(offObj),
+                  round: JSON.stringify(roundObj),
+                }),
+                headers: {
+                  "Content-type": "text/plain;charset=utf-8",
+                },
+              })
+                .then((response) => response.text())
+                .then((json) => {
+                  const output = JSON.parse(json);
+                  if (output.status == "ok") {
+                    alert("Saved", "Please wait until everyone has inserted their data.", "done");
+                    loadPage.style.display = "none";
+                    updatePeepOffTxt(output.response.value);
+
+                    // update off data TODO:
+                  } else {
+                    loadPage.style.display = "none";
+                    alert("Error", "", "alert");
+                  }
+                })
+                .catch((error) => {
+                  alert("Error", error, "alert");
+                  loadPage.style.display = "none";
+                  console.error("Fetch error: ", error);
+                });
+            }
           } else {
-            loadPage.style.display = "none";
             alert("Error", "", "alert");
           }
         })
@@ -1924,6 +2244,7 @@ function exportCalendar(month, year, dom) {
 }
 
 function recheck() {
+  // console.clear(); // DEBUG:
   const tableText = document.querySelector("#page_schedule").innerHTML;
   if (mode == 1) {
     console.log(data_off);
@@ -1934,7 +2255,7 @@ function recheck() {
       const regex = new RegExp(name, "g");
       const count = (tableText.match(regex) || []).length;
       statData.push([name, count]);
-      // console.log(name, count);
+      console.log(name, count);
     });
     const table = document.createElement("table");
     for (let i = 0; i < statData.length; i += 2) {
@@ -1997,7 +2318,7 @@ function alert(text, subtext, type) {
       break;
   }
   txt.textContent = text;
-  subtxt.textContent = subtext;
+  subtxt.innerHTML = subtext;
 
   setTimeout(function () {
     popup.style.opacity = "0";
