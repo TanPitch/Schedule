@@ -90,7 +90,7 @@ const data_rotate = [
     rotate: ["ortho", "er", "ob", "ped", "med", "med", "out", "out", "sx", "sx", "ob", "ped"],
   },
   {
-    name: "รวิษฏ์",
+    name: "รวิษฎ์",
     rotate: ["er", "ortho", "ped", "ob", "med", "med", "out", "out", "sx", "sx", "ped", "ob"],
   },
   {
