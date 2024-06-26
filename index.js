@@ -416,7 +416,7 @@ var data_off = [
     ward: [],
   },
   {
-    name: "รวิษฏ์",
+    name: "รวิษฎ์",
     dayoff: [],
     ward: [],
   },
