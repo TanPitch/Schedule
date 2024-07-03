@@ -146,7 +146,7 @@ const data_rotate = [
     rotate: ["med", "ped", "er", "", "", "", "", "", "", "", "", ""],
   },
   {
-    name: "ศีรญา",
+    name: "ศิรญา",
     rotate: ["ped", "ob", "ob", "", "", "", "", "", "", "", "", ""],
   },
   {
@@ -293,7 +293,7 @@ var peepStat = [
     er3: 0,
   },
   {
-    name: "ศีรญา",
+    name: "ศิรญา",
     block: 0,
     hr: 0,
     er3: 0,
@@ -486,7 +486,7 @@ var data_off = [
     ward: [],
   },
   {
-    name: "ศีรญา",
+    name: "ศิรญา",
     dayoff: [],
     ward: [],
   },
@@ -1846,7 +1846,7 @@ nav_btn_re.addEventListener("click", () => {
       er3: 0,
     },
     {
-      name: "ศีรญา",
+      name: "ศิรญา",
       block: 0,
       hr: 0,
       er3: 0,
@@ -2271,10 +2271,17 @@ function recheck() {
 }
 
 function getNextMonth(month, year, step = 1) {
-  var nextMonth = month + step;
-  year += Math.floor(nextMonth / 12);
-  nextMonth = nextMonth % 12;
-  return { month: nextMonth, year: year };
+  var currentDate = new Date();
+  var currentDay = currentDate.getDate();
+
+  if (currentDay > 20) {
+    var nextMonth = month + step;
+    year += Math.floor(nextMonth / 12);
+    nextMonth = nextMonth % 12;
+    return { month: nextMonth, year: year };
+  } else {
+    return { month: month, year: year };
+  }
 }
 function findRotate(peepName, month) {
   for (let i = 0; i < data_rotate.length; i++) {
