@@ -1139,6 +1139,7 @@ const nav_btn_back = document.querySelector("#nav_btn_back");
 const page_input = document.querySelector("#page_input");
 const page_input_round = document.querySelector("#page_input_round");
 const page_input_off = document.querySelector("#page_input_off");
+const page_input_select = document.querySelector("#page_input_select");
 const page_schedule = document.querySelector("#page_schedule");
 const page_calendar = document.querySelector("#page_calendar");
 
@@ -1326,7 +1327,8 @@ function initial() {
           cell.classList.add("empty");
         } else {
           cell.innerText = day;
-          if (day % 7 == 0 || day % 7 == 6) {
+          const date = new Date(year, month, day).getDay();
+          if (date % 7 == 0 || date % 7 == 6) {
             cell.classList.add("weekend");
           }
           if (specialWeekend[month].includes(day)) {
@@ -1409,10 +1411,34 @@ function initial() {
     }
 
     nav_bar.style.display = "flex";
+    // page_input_select.style.display = "flex";
     initSchedule();
+
+    // createCalendar(nextMonth, nextYear, document.querySelector("#page_calendar_off"));
+    // Array.from(document.querySelectorAll("#page_calendar_off td")).forEach((el) => {
+    //   if ([...data_off[NameToNum(userName)].dayoff].includes(Number(el.textContent.trim())))
+    //     el.classList.add("bg_blue");
+    // });
+    // updatePeepOffTxt();
+    // if (input_name.value == "ธัญณัฐ") {
+    //   nav_btn_re.style.display = "none";
+    //   nav_btn_upload.style.display = "none";
+    //   nav_btn_clear.style.display = "none";
+    // }
+    // if (userName != "ธัญณัฐ") {
+    //   getData();
+    //   generateTable();
+    //   return;
+    // }
+    // getData();
+    // doSchedule();
+    // generateTable();
+
+    // return;
+
     if (mode == 1) {
       // do off, round
-      createCalendar(nextMonth, nextYear, document.querySelector("#page_calendar_round"), "orange");
+      // createCalendar(nextMonth, nextYear, document.querySelector("#page_calendar_round"), "orange");
       // if (userRotate != "ped" && userRotate != "er" && PCUblock != "ped")
       createCalendar(nextMonth, nextYear, document.querySelector("#page_calendar_off"));
 
@@ -1421,13 +1447,13 @@ function initial() {
         if ([...data_off[NameToNum(userName)].dayoff].includes(Number(el.textContent.trim())))
           el.classList.add("bg_blue");
       });
-      Array.from(document.querySelectorAll("#page_calendar_round td")).forEach((el) => {
-        if ([...data_off[NameToNum(userName)].ward].includes(Number(el.textContent.trim())))
-          el.classList.add("bg_orange");
-      });
+      // Array.from(document.querySelectorAll("#page_calendar_round td")).forEach((el) => {
+      //   if ([...data_off[NameToNum(userName)].ward].includes(Number(el.textContent.trim())))
+      //     el.classList.add("bg_orange");
+      // });
 
       updatePeepOffTxt();
-      page_input_round.style.display = "flex";
+      page_input_off.style.display = "flex";
 
       if (input_name.value == "ธัญณัฐ") {
         nav_btn_re.style.display = "none";
@@ -2274,14 +2300,14 @@ function getNextMonth(month, year, step = 1) {
   var currentDate = new Date();
   var currentDay = currentDate.getDate();
 
-  if (currentDay > 20) {
-    var nextMonth = month + step;
-    year += Math.floor(nextMonth / 12);
-    nextMonth = nextMonth % 12;
-    return { month: nextMonth, year: year };
-  } else {
-    return { month: month, year: year };
-  }
+  // if (currentDay > 20) {
+  var nextMonth = month + step;
+  year += Math.floor(nextMonth / 12);
+  nextMonth = nextMonth % 12;
+  return { month: nextMonth, year: year };
+  // } else {
+  //   return { month: month, year: year };
+  // }
 }
 function findRotate(peepName, month) {
   for (let i = 0; i < data_rotate.length; i++) {

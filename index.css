@@ -196,6 +196,13 @@ select {
 
 /* #region : table */
 
+#page_input_select {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 #page_schedule {
   width: 100dvw;
   height: calc(100dvh - 48px);
