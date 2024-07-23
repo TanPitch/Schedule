@@ -62,7 +62,7 @@ var specialName_2 = "";
 // #region : static data
 
 const API_url =
-  "https://script.google.com/macros/s/AKfycbw4Gj4VIA31gWSoy_y_2YaZ3WSvNHorx3H43-9CSyKqKWwC6BFG-k8mkbM1-XIgTHKV/exec";
+  "https://script.google.com/macros/s/AKfycbxyAnqbpkrd69F6TxOoTCJQlZHYzRY86ZrMjsNv-yMv7R8bNZVZ76eKt-Gcg3Mnxm7S/exec";
 
 const data_rotate = [
   {
@@ -984,7 +984,7 @@ function doSchedule() {
   // console.log(peepStat);
 }
 
-function generateTable() {
+function generateTable(input_month) {
   // check if date is weekend
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth();
@@ -992,9 +992,9 @@ function generateTable() {
   const { month: nextMonth, year: nextYear } = getNextMonth(currentMonth, currentYear);
 
   function isweekend(date) {
-    const dateToCheck = new Date(nextYear, nextMonth, date);
+    const dateToCheck = new Date(nextYear, input_month, date);
     const dayOfWeek = dateToCheck.getDay();
-    return dayOfWeek === 0 || dayOfWeek === 6 || specialWeekend[nextMonth].includes(date);
+    return dayOfWeek === 0 || dayOfWeek === 6 || specialWeekend[input_month].includes(date);
   }
 
   const columns = [
@@ -1091,11 +1091,11 @@ function initSchedule() {
   const { month: nextMonth } = getNextMonth(currentMonth, currentYear);
   var rotateTxt;
   var monthTxt = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][
-    nextMonth
+    `${mode == 2 ? nextMonth : currentMonth}`
   ];
   for (let i = 0; i < data_rotate.length; i++) {
     if (data_rotate[i].name == userName) {
-      rotateTxt = findRotate(userName, nextMonth).toUpperCase();
+      rotateTxt = findRotate(userName, mode == 2 ? nextMonth : currentMonth).toUpperCase();
       break;
     }
   }
@@ -1163,7 +1163,8 @@ function initial() {
 
   const dropName = [];
   data_rotate.forEach((el) => {
-    if (el.rotate[(nextMonth + 19) % 12] != "" && el.rotate[(nextMonth + 19) % 12] != "out") {
+    // if (el.rotate[(nextMonth + 19) % 12] != "" && el.rotate[(nextMonth + 19) % 12] != "out") {
+    if (el.rotate[(nextMonth + 19) % 12] != "") {
       if (el.name != "ค่าย 1" && el.name != "ค่าย 2") dropName.push({ name: el.name, value: el.name });
     }
   });
@@ -1249,7 +1250,7 @@ function initial() {
         }
 
         // get table data
-        if (mode == 2) {
+        if (mode == 2)
           output.response.value.forEach((el, i) => {
             el.forEach((name, block) => {
               const blockLists = [
@@ -1268,7 +1269,25 @@ function initial() {
               if (name.trim() != "") getData_table[i][blockLists[block]] = name;
             });
           });
-        }
+        else
+          output.response.schedule.forEach((el, i) => {
+            el.forEach((name, block) => {
+              const blockLists = [
+                "med",
+                "ped",
+                "ob",
+                "sx",
+                "ortho",
+                "er1_1",
+                "er1_2",
+                "er2_1",
+                "er2_2",
+                "er2_3",
+                "er3_1",
+              ];
+              if (name.trim() != "") getData_table[i][blockLists[block]] = name;
+            });
+          });
       } else {
         alert("Error", "Fetching data error", "alert");
       }
@@ -1405,80 +1424,80 @@ function initial() {
     }
 
     // roatation out -> not use
-    if (userRotate == "out") {
-      alert("วนนอกไม่เกี่ยว");
-      return;
-    }
-
-    nav_bar.style.display = "flex";
-    // page_input_select.style.display = "flex";
-    initSchedule();
-
-    // createCalendar(nextMonth, nextYear, document.querySelector("#page_calendar_off"));
-    // Array.from(document.querySelectorAll("#page_calendar_off td")).forEach((el) => {
-    //   if ([...data_off[NameToNum(userName)].dayoff].includes(Number(el.textContent.trim())))
-    //     el.classList.add("bg_blue");
-    // });
-    // updatePeepOffTxt();
-    // if (input_name.value == "ธัญณัฐ") {
-    //   nav_btn_re.style.display = "none";
-    //   nav_btn_upload.style.display = "none";
-    //   nav_btn_clear.style.display = "none";
-    // }
-    // if (userName != "ธัญณัฐ") {
-    //   getData();
-    //   generateTable();
+    // if (userRotate == "out") {
+    //   alert("วนนอกไม่เกี่ยว");
     //   return;
     // }
-    // getData();
-    // doSchedule();
-    // generateTable();
 
-    // return;
+    nav_bar.style.display = "flex";
+    initSchedule();
 
     if (mode == 1) {
-      // do off, round
-      // createCalendar(nextMonth, nextYear, document.querySelector("#page_calendar_round"), "orange");
-      // if (userRotate != "ped" && userRotate != "er" && PCUblock != "ped")
-      createCalendar(nextMonth, nextYear, document.querySelector("#page_calendar_off"));
+      page_input_select.style.display = "flex";
+      const page_show_schedule = document.querySelector("#page_show_schedule");
+      const page_show_inputDayoff = document.querySelector("#page_show_inputDayoff");
 
-      // get off, round data
-      Array.from(document.querySelectorAll("#page_calendar_off td")).forEach((el) => {
-        if ([...data_off[NameToNum(userName)].dayoff].includes(Number(el.textContent.trim())))
-          el.classList.add("bg_blue");
-      });
-      // Array.from(document.querySelectorAll("#page_calendar_round td")).forEach((el) => {
-      //   if ([...data_off[NameToNum(userName)].ward].includes(Number(el.textContent.trim())))
-      //     el.classList.add("bg_orange");
-      // });
+      page_show_inputDayoff.addEventListener("click", () => {
+        page_input_select.style.display = "none";
 
-      updatePeepOffTxt();
-      page_input_off.style.display = "flex";
+        // do off, round
+        // createCalendar(nextMonth, nextYear, document.querySelector("#page_calendar_round"), "orange");
+        // if (userRotate != "ped" && userRotate != "er" && PCUblock != "ped")
+        createCalendar(nextMonth, nextYear, document.querySelector("#page_calendar_off"));
 
-      if (input_name.value == "ธัญณัฐ") {
-        nav_btn_re.style.display = "none";
-        nav_btn_upload.style.display = "none";
-        nav_btn_clear.style.display = "none";
-      }
+        // get off, round data
+        Array.from(document.querySelectorAll("#page_calendar_off td")).forEach((el) => {
+          if ([...data_off[NameToNum(userName)].dayoff].includes(Number(el.textContent.trim())))
+            el.classList.add("bg_blue");
+        });
+        // Array.from(document.querySelectorAll("#page_calendar_round td")).forEach((el) => {
+        //   if ([...data_off[NameToNum(userName)].ward].includes(Number(el.textContent.trim())))
+        //     el.classList.add("bg_orange");
+        // });
 
-      nav_btn_round.addEventListener("click", () => {
-        nav_btn_round.className = "btn bg_midgrey";
-        nav_btn_off.className = "btn bg_midgrey select";
-        page_input_round.style.display = "flex";
-        page_input_off.style.display = "none";
-      });
-      nav_btn_off.addEventListener("click", () => {
-        nav_btn_round.className = "btn bg_midgrey select";
-        nav_btn_off.className = "btn bg_midgrey";
-        page_input_round.style.display = "none";
+        updatePeepOffTxt();
         page_input_off.style.display = "flex";
-      });
 
-      btn_next_weekoff.addEventListener("click", () => {
-        nav_btn_round.className = "btn bg_midgrey select";
-        nav_btn_off.className = "btn bg_midgrey";
-        page_input_round.style.display = "none";
-        page_input_off.style.display = "flex";
+        if (input_name.value == "ธัญณัฐ") {
+          nav_btn_re.style.display = "none";
+          nav_btn_upload.style.display = "none";
+          nav_btn_clear.style.display = "none";
+        }
+
+        nav_btn_round.addEventListener("click", () => {
+          nav_btn_round.className = "btn bg_midgrey";
+          nav_btn_off.className = "btn bg_midgrey select";
+          page_input_round.style.display = "flex";
+          page_input_off.style.display = "none";
+        });
+        nav_btn_off.addEventListener("click", () => {
+          nav_btn_round.className = "btn bg_midgrey select";
+          nav_btn_off.className = "btn bg_midgrey";
+          page_input_round.style.display = "none";
+          page_input_off.style.display = "flex";
+        });
+
+        btn_next_weekoff.addEventListener("click", () => {
+          nav_btn_round.className = "btn bg_midgrey select";
+          nav_btn_off.className = "btn bg_midgrey";
+          page_input_round.style.display = "none";
+          page_input_off.style.display = "flex";
+        });
+      });
+      page_show_schedule.addEventListener("click", () => {
+        page_input.style.display = "none";
+        nav_btn_round.style.display = "none";
+        nav_btn_off.style.display = "none";
+        page_schedule.style.display = "block";
+
+        if (userName != "ธัญณัฐ") {
+          getData();
+          generateTable(currentMonth);
+          return;
+        }
+        getData();
+        // doSchedule();
+        generateTable(currentMonth);
       });
     } else if (mode == 2) {
       page_input.style.display = "none";
@@ -1488,12 +1507,12 @@ function initial() {
 
       if (userName != "ธัญณัฐ") {
         getData();
-        generateTable();
+        generateTable(nextMonth);
         return;
       }
       getData();
-      doSchedule();
-      generateTable();
+      // doSchedule();
+      generateTable(nextMonth);
     }
   });
 
@@ -1501,7 +1520,7 @@ function initial() {
     nav_btn_save.click();
   });
   nav_btn_save.addEventListener("click", () => {
-    if (mode == 1) {
+    if (mode == 1 && page_schedule.style.display == "none") {
       const roundObj = Array.from(document.querySelectorAll("#page_calendar_round .bg_orange"))
         .map((element) => Number(element.textContent.trim()))
         .map(Number)
@@ -1688,11 +1707,16 @@ function initial() {
           loadPage.style.display = "none";
           console.error("Fetch error: ", error);
         });
-    } else if (mode == 2) {
+    } else if (
+      mode == 2 ||
+      page_schedule.style.display == "block" ||
+      page_schedule.style.display == "flex"
+    ) {
       nav_btn_back.style.display = "flex";
       nav_btn_save.style.display = "none";
 
-      exportCalendar(nextMonth, nextYear, document.querySelector("#page_calendar"));
+      if (mode == 1) exportCalendar(currentMonth, nextYear, document.querySelector("#page_calendar"));
+      else if (mode == 2) exportCalendar(nextMonth, nextYear, document.querySelector("#page_calendar"));
       page_schedule.style.display = "none";
       page_calendar.style.display = "flex";
     }
@@ -2254,7 +2278,8 @@ function exportCalendar(month, year, dom) {
           if (ward.includes("ER")) cell.classList.add("bg_schedule1");
           else cell.classList.add("bg_schedule2");
         }
-        if (day % 7 == 0 || day % 7 == 6) {
+        const date = new Date(year, month, day).getDay();
+        if (date % 7 == 0 || date % 7 == 6) {
           cell.classList.add("weekend");
         }
         if (specialWeekend[month].includes(day)) {
